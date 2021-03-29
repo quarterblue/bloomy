@@ -1,6 +1,10 @@
 extern crate reqwest;
 // use reqwest::Error;
 use std::env;
+use std::error::Error;
+use std::fs;
+use std::io::BufReader;
+use std::path::Path;
 use std::str::FromStr;
 
 /**
@@ -85,4 +89,23 @@ fn main() -> Result<(), std::io::Error> {
 
     println!("{:?}", args);
     Ok(())
+}
+
+fn load_config(configfile: String) {
+    let path = Path::new("config.txt");
+
+    let config = match fs::File::open(&path) {
+        Err(err) => panic!("Could not open config file"),
+        Ok(config) => config,
+    };
+
+    let reader = BufReader::new(config);
+    for line in reader.lines() {
+        match line {
+            Ok(line) => {
+                println!("{}", line)
+            }
+            Err(e) => println!("Error: {}", e),
+        }
+    }
 }
