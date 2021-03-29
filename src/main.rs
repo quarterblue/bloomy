@@ -29,6 +29,10 @@ enum Currency {
     DEFAULT,
 }
 
+struct Portfolio {
+    stocklist: Vec<StockArgs>,
+}
+
 struct StockArgs {
     stock: String,
     chart: bool,
@@ -64,7 +68,14 @@ impl StockArgs {
         } else if args.len() > 5 {
             return Err("Too many arguments.");
         }
+        let stock = args[1].clone();
         let options = args[2].clone();
+        return Ok(StockArgs {
+            stock,
+            chart: false,
+            datalog: false,
+            currency: Currency::DEFAULT,
+        });
     }
 }
 
