@@ -22,6 +22,22 @@ use std::str::FromStr;
  *      bloomy apple -cd
  */
 
+struct Stock {
+    name: String,
+    price: f32,
+    marketcap: i64,
+    high: f32,
+    low: f32,
+    volume: i32,
+    ownedpercent: f32,
+    ownedshares: u32,
+}
+
+struct Portfolio {
+    stocks: Vec<Stock>,
+    totalvalue: i64,
+}
+
 struct Config {
     url: String,
     key: String,
@@ -31,10 +47,6 @@ enum Currency {
     CAD,
     USD,
     DEFAULT,
-}
-
-struct Portfolio {
-    stocklist: Vec<StockArgs>,
 }
 
 struct StockArgs {
