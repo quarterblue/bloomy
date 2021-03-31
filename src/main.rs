@@ -96,15 +96,20 @@ impl StockArgs {
     }
 }
 
+// Main entry function
 fn main() -> Result<(), std::io::Error> {
-    let _client = reqwest::Client::new();
-    let args: Vec<String> = env::args().skip(1).collect();
-    load_config(&String::from("config.txt"));
-
+    run().expect("Something went wrong!");
     Ok(())
 }
 
-fn load_config(configfile: &String) {
+fn run() -> Result<(), std::io::Error> {
+    let _client = reqwest::Client::new();
+    let args: Vec<String> = env::args().skip(1).collect();
+    load_config(&String::from("config.txt")).expect("Something went wrong!");
+    Ok(())
+}
+
+fn load_config(configfile: &String) -> Result<Config, std::io::Error> {
     let path = Path::new(configfile);
 
     let config = match fs::File::open(&path) {
@@ -113,13 +118,22 @@ fn load_config(configfile: &String) {
     };
 
     let reader = BufReader::new(config);
+    let mut url = String::from("");
+    let mut key = String::from("");
 
     for (index, line) in reader.lines().enumerate() {
         match line {
             Ok(line) => {
+                if index == 0 {
+                    url = String::from(&line);
+                } else if index == 1 {
+                    key = String::from(&line);
+                }
                 println!("{} {}", index, line)
             }
             Err(e) => println!("Error: {}", e),
         }
     }
+
+    Ok(Config { url, key })
 }
