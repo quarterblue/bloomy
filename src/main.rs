@@ -3,9 +3,10 @@ extern crate reqwest;
 use std::env;
 use std::error::Error;
 use std::fs;
-use std::io::BufReader;
+use std::io::{BufRead, BufReader};
 use std::path::Path;
 use std::str::FromStr;
+use std::string::String;
 
 /**
  * UsageList :
@@ -98,24 +99,25 @@ impl StockArgs {
 fn main() -> Result<(), std::io::Error> {
     let _client = reqwest::Client::new();
     let args: Vec<String> = env::args().skip(1).collect();
+    load_config(&String::from("config.txt"));
 
-    println!("{:?}", args);
     Ok(())
 }
 
-fn load_config(configfile: String) {
-    let path = Path::new("config.txt");
+fn load_config(configfile: &String) {
+    let path = Path::new(configfile);
 
     let config = match fs::File::open(&path) {
-        Err(err) => panic!("Could not open config file"),
+        Err(err) => panic!("Could not open config file, {}", err),
         Ok(config) => config,
     };
 
     let reader = BufReader::new(config);
-    for line in reader.lines() {
+
+    for (index, line) in reader.lines().enumerate() {
         match line {
             Ok(line) => {
-                println!("{}", line)
+                println!("{} {}", index, line)
             }
             Err(e) => println!("Error: {}", e),
         }
