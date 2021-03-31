@@ -21,6 +21,15 @@ use std::string::String;
  *      bloomy apple -c
  *  With chart and long datalog:
  *      bloomy apple -cd
+ *
+ * Portfolio listing:
+ *      bloomy portfolio
+ *
+ * Portfolio listing w/ options:
+ *  With long option:
+ *      bloomy portfolio -l
+ *  With valuation options:
+ *      bloomy portfolio -v
  */
 
 struct Stock {
@@ -109,6 +118,17 @@ fn run() -> Result<(), std::io::Error> {
     Ok(())
 }
 
+/**
+ * Config file loader, config.txt must be in the following format:
+ *
+ * Line 0: URL
+ * Line 1: KEY
+ *
+ * Example:
+ * https://www.stockapisite.com/api/v2/
+ * OAdawjiofWA20489ajiofwajoi
+ *
+ */
 fn load_config(configfile: &String) -> Result<Config, std::io::Error> {
     let path = Path::new(configfile);
 
