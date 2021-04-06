@@ -1,11 +1,10 @@
 extern crate reqwest;
 // use reqwest::Error;
 use std::env;
-use std::error::Error;
 use std::fs;
+use std::io;
 use std::io::{BufRead, BufReader};
 use std::path::Path;
-use std::str::FromStr;
 use std::string::String;
 
 /**
@@ -106,15 +105,15 @@ impl StockArgs {
 }
 
 // Main entry function
-fn main() -> Result<(), std::io::Error> {
-    run().expect("Something went wrong!");
+fn main() -> Result<(), Error> {
+    run()?;
     Ok(())
 }
 
-fn run() -> Result<(), std::io::Error> {
+fn run() -> Result<(), Error> {
     let _client = reqwest::Client::new();
     let args: Vec<String> = env::args().skip(1).collect();
-    load_config(&String::from("config.txt")).expect("Something went wrong!");
+    load_config(&String::from("config.txt"))?;
     Ok(())
 }
 
@@ -156,4 +155,13 @@ fn load_config(configfile: &String) -> Result<Config, std::io::Error> {
     }
 
     Ok(Config { url, key })
+}
+
+#[derive(Debug, thiserror::Error)]
+enum Error {
+    #[error(transparent)]
+    CrosstermError(#[from] crossterm::ErrorKind),
+
+    #[error(transparent)]
+    IoError(#[from] io::Error),
 }
