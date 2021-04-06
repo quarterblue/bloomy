@@ -2,7 +2,7 @@ extern crate reqwest;
 // use reqwest::Error;
 use std::env;
 use std::fs;
-use std::io;
+use std::io::{self, Read, Write};
 use std::io::{BufRead, BufReader};
 use std::path::Path;
 use std::string::String;
@@ -113,7 +113,23 @@ fn main() -> Result<(), Error> {
 fn run() -> Result<(), Error> {
     let _client = reqwest::Client::new();
     let args: Vec<String> = env::args().skip(1).collect();
-    load_config(&String::from("config.txt"))?;
+    // load_config(&String::from("config.txt"))?;
+
+    let mut stdout = io::stdout();
+    let mut stdin = io::stdin();
+    loop {
+        let mut buffer = String::new();
+        write!(stdout, "Enter your command> ")?;
+        stdout.flush()?;
+        stdin.read_line(&mut buffer)?;
+        write!(stdout, "You typed {}", buffer);
+
+        if buffer.trim() == "q" {
+            break;
+        }
+        stdout.flush()?;
+    }
+
     Ok(())
 }
 
