@@ -31,6 +31,19 @@ use std::string::String;
  *      bloomy portfolio -v
  */
 
+enum Command {
+    Stock,
+    Portfolio,
+    Market,
+    Lookup,
+    Help,
+    Load,
+}
+
+struct ArgParser {
+    command: Option<Command>,
+}
+
 struct Stock {
     name: String,
     price: f32,
@@ -55,6 +68,9 @@ struct Config {
 enum Currency {
     CAD,
     USD,
+    EUR,
+    GBP,
+    JPY,
     DEFAULT,
 }
 
@@ -116,21 +132,54 @@ fn run() -> Result<(), Error> {
     // load_config(&String::from("config.txt"))?;
 
     let mut stdout = io::stdout();
-    let mut stdin = io::stdin();
+    let stdin = io::stdin();
+    let mut argparser: ArgParser;
+
     loop {
         let mut buffer = String::new();
         write!(stdout, "Enter your command> ")?;
         stdout.flush()?;
         stdin.read_line(&mut buffer)?;
         write!(stdout, "You typed {}", buffer);
+        argparser = parsearg(&mut buffer)?;
 
         if buffer.trim() == "q" {
             break;
         }
         stdout.flush()?;
     }
-
     Ok(())
+}
+
+fn parsearg(input: &mut String) -> Result<ArgParser, Error> {
+    let split = input.split(" ");
+    let arguments: Vec<&str> = split.collect();
+    match arguments[0].to_lowercase().as_str() {
+        "stock" => {
+            return Ok(ArgParser {
+                command: Some(Command::Stock),
+            });
+        }
+        "portfolio" => {
+            return Ok(ArgParser {
+                command: Some(Command::Portfolio),
+            });
+        }
+        "market" => {
+            return Ok(ArgParser {
+                command: Some(Command::Market),
+            });
+        }
+        "help" => {
+            return Ok(ArgParser {
+                command: Some(Command::Help),
+            });
+        }
+        _ => {
+            println!("Well, it's an error!");
+            return Ok(ArgParser { command: None });
+        }
+    }
 }
 
 /**
