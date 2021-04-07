@@ -126,6 +126,10 @@ fn main() -> Result<(), Error> {
     Ok(())
 }
 
+fn display_help() {
+    println!()
+}
+
 fn run() -> Result<(), Error> {
     let _client = reqwest::Client::new();
     let args: Vec<String> = env::args().skip(1).collect();
@@ -141,10 +145,17 @@ fn run() -> Result<(), Error> {
         stdout.flush()?;
         stdin.read_line(&mut buffer)?;
         write!(stdout, "You typed {}", buffer);
-        argparser = parsearg(&mut buffer)?;
-
         if buffer.trim() == "q" {
             break;
+        }
+        argparser = parsearg(&mut buffer)?;
+
+        match argparser.command {
+            Some(Command::Stock) => println!("Stock now!"),
+            Some(Command::Portfolio) => println!("Portfolio now!"),
+            Some(Command::Market) => println!("Market now!"),
+            Some(Command::Help) => println!("Help now!"),
+            _ => println!("Nothing"),
         }
         stdout.flush()?;
     }
@@ -154,7 +165,8 @@ fn run() -> Result<(), Error> {
 fn parsearg(input: &mut String) -> Result<ArgParser, Error> {
     let split = input.split(" ");
     let arguments: Vec<&str> = split.collect();
-    match arguments[0].to_lowercase().as_str() {
+    println!("{:?}", &input);
+    match arguments[0].to_lowercase().as_str().trim() {
         "stock" => {
             return Ok(ArgParser {
                 command: Some(Command::Stock),
