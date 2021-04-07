@@ -121,13 +121,26 @@ impl StockArgs {
 }
 
 // Main entry function
+// #[cfg(not(target_arch = "wasm32"))]
+// #[tokio::main]
+// async fn main() -> Result<(), reqwest::Error> {
+//     // run()?;
+//     display_stock();
+//     Ok(())
+// }
+
 fn main() -> Result<(), Error> {
     run()?;
     Ok(())
 }
 
-fn display_help() {
-    println!()
+// Testing Reqwest get
+async fn display_stock() -> Result<(), reqwest::Error> {
+    let res = reqwest::get("https://jsonplaceholder.typicode.com/todos/1").await?;
+    println!("Status:{}", res.status());
+    let body = res.text().await?;
+    println!("Body:\n\n{}", body);
+    Ok(())
 }
 
 fn run() -> Result<(), Error> {
