@@ -1,16 +1,18 @@
 mod argparser;
-mod stocks;
+mod equity;
 extern crate reqwest;
+
 // use reqwest::Error;
 
 use argparser::*;
+use equity::Equity;
 use std::env;
 use std::fs;
 use std::io::{self, Read, Write};
 use std::io::{BufRead, BufReader};
 use std::path::Path;
 use std::string::String;
-use stocks::Stock;
+use tokio::task::*;
 
 /**
  * UsageList :
@@ -36,30 +38,30 @@ use stocks::Stock;
  *      bloomy portfolio -v
  */
 
-// Main entry function
-// #[cfg(not(target_arch = "wasm32"))]
-// #[tokio::main]
-// async fn main() -> Result<(), reqwest::Error> {
-//     // run()?;
-//     display_stock();
-//     Ok(())
-// }
-
-fn main() -> Result<(), Error> {
-    run()?;
+#[cfg(not(target_arch = "wasm32"))]
+#[tokio::main]
+async fn main() -> Result<(), Error> {
+    run().await?;
+    // let _ = display_stock(6).await?;
     Ok(())
 }
 
+// fn main() -> Result<(), Error> {
+//     run()?;
+//     Ok(())
+// }
+
 // Testing Reqwest get
-async fn display_stock() -> Result<(), reqwest::Error> {
-    let res = reqwest::get("https://jsonplaceholder.typicode.com/todos/1").await?;
+async fn display_stock(todo_id: i32) -> Result<(), reqwest::Error> {
+    let url = format!("https://jsonplaceholder.typicode.com/todos/{}", todo_id);
+    let res = reqwest::get(url).await?;
     println!("Status:{}", res.status());
     let body = res.text().await?;
     println!("Body:\n\n{}", body);
     Ok(())
 }
 
-fn run() -> Result<(), Error> {
+async fn run() -> Result<(), Error> {
     let _client = reqwest::Client::new();
     let args: Vec<String> = env::args().skip(1).collect();
     // load_config(&String::from("config.txt"))?;
@@ -80,7 +82,7 @@ fn run() -> Result<(), Error> {
         argparser = parsearg(&mut buffer)?;
 
         match argparser.command {
-            Some(Command::Stock) => println!("Stock now!"),
+            Some(Command::Stock) => display_stock(5).await?,
             Some(Command::Portfolio) => println!("Portfolio now!"),
             Some(Command::Market) => println!("Market now!"),
             Some(Command::Help) => println!("Help now!"),
@@ -123,46 +125,6 @@ fn parsearg(input: &mut String) -> Result<ArgParser, Error> {
     }
 }
 
-/**
- * Config file loader, config.txt must be in the following format:
- *
- * Line 0: URL
- * Line 1: KEY
- *
- * Example:
- * https://www.stockapisite.com/api/v2/
- * OAdawjiofWA20489ajiofwajoi
- *
- */
-fn load_config(configfile: &String) -> Result<Config, std::io::Error> {
-    let path = Path::new(configfile);
-
-    let config = match fs::File::open(&path) {
-        Err(err) => panic!("Could not open config file, {}", err),
-        Ok(config) => config,
-    };
-
-    let reader = BufReader::new(config);
-    let mut url = String::from("");
-    let mut key = String::from("");
-
-    for (index, line) in reader.lines().enumerate() {
-        match line {
-            Ok(line) => {
-                if index == 0 {
-                    url = String::from(&line);
-                } else if index == 1 {
-                    key = String::from(&line);
-                }
-                println!("{} {}", index, line)
-            }
-            Err(e) => println!("Error: {}", e),
-        }
-    }
-
-    Ok(Config { url, key })
-}
-
 #[derive(Debug, thiserror::Error)]
 enum Error {
     #[error(transparent)]
@@ -170,4 +132,7 @@ enum Error {
 
     #[error(transparent)]
     IoError(#[from] io::Error),
+
+    #[error(transparent)]
+    ReqwestError(#[from] reqwest::Error),
 }

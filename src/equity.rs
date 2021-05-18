@@ -1,4 +1,4 @@
-pub struct Stock {
+pub struct Equity {
     name: String,
     ticker: String,
     price: f32,
