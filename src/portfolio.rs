@@ -1,5 +1,8 @@
+mod Equity;
+use Equity::Equity;
+
 pub struct Portfolio {
-    pub stocks: Vec<Stock>,
+    pub stocks: Vec<Equity>,
     pub totalvalue: i64,
 }
 
@@ -12,7 +15,7 @@ impl Portfolio {
         }
     }
 
-    pub fn add_stock(&mut self, new_stock: Stock) -> Result<Ok, Err> {
+    pub fn add_stock(&mut self, new_stock: Equity) -> Result<Ok, Err> {
         for stock in &self.stocks {
             if (stock.ticker == new_stock.ticker) {
                 Err()
@@ -32,5 +35,7 @@ impl Portfolio {
         }
         Err()
     }
+
+    pub fn calculate_total(&mut self) -> Result<Ok, Err> {}
     pub fn print_portfolio() {}
 }
