@@ -75,7 +75,7 @@ async fn run() -> Result<(), Error> {
         write!(stdout, "Enter your command> ")?;
         stdout.flush()?;
         stdin.read_line(&mut buffer)?;
-        write!(stdout, "You typed {}", buffer);
+        // write!(stdout, "You typed {}", buffer);
         if buffer.trim() == "q" {
             break;
         }
@@ -86,6 +86,7 @@ async fn run() -> Result<(), Error> {
             Some(Command::Portfolio) => println!("Portfolio now!"),
             Some(Command::Market) => println!("Market now!"),
             Some(Command::Help) => println!("Help now!"),
+            Some(Command::Load) => println!("Loading Config..."),
             _ => println!("Nothing"),
         }
         stdout.flush()?;
@@ -116,6 +117,11 @@ fn parsearg(input: &mut String) -> Result<ArgParser, Error> {
         "help" => {
             return Ok(ArgParser {
                 command: Some(Command::Help),
+            });
+        }
+        "load" => {
+            return Ok(ArgParser {
+                command: Some(Command::Load),
             });
         }
         _ => {

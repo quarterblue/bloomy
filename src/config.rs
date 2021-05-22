@@ -4,6 +4,11 @@ pub struct config {
     loaded: bool,
 }
 
+// pub struct Config {
+//     pub url: String,
+//     pub key: String,
+// }
+
 /**
  * Config file loader, config.txt must be in the following format:
  *
@@ -15,8 +20,8 @@ pub struct config {
  * OAdawjiofWA20489ajiofwajoi
  *
  */
-fn load_config(configfile: &String) -> Result<Config, std::io::Error> {
-    let path = Path::new(configfile);
+fn load_config(config_path: &String) -> Result<Config, std::io::Error> {
+    let path = Path::new(config_path);
 
     let config = match fs::File::open(&path) {
         Err(err) => panic!("Could not open config file, {}", err),

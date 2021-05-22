@@ -11,11 +11,6 @@ pub struct ArgParser {
     pub command: Option<Command>,
 }
 
-pub struct Config {
-    pub url: String,
-    pub key: String,
-}
-
 pub enum Currency {
     CAD,
     USD,

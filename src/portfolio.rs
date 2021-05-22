@@ -1,5 +1,5 @@
-mod Equity;
-use Equity::Equity;
+mod equity;
+use equity::Equity;
 
 pub struct Portfolio {
     pub stocks: Vec<Equity>,
