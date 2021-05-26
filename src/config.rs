@@ -20,7 +20,7 @@ pub struct config {
  * OAdawjiofWA20489ajiofwajoi
  *
  */
-fn load_config(config_path: &String) -> Result<Config, std::io::Error> {
+pub fn load_config(config_path: &String) -> Result<Config, std::io::Error> {
     let path = Path::new(config_path);
 
     let config = match fs::File::open(&path) {
