@@ -61,6 +61,16 @@ async fn display_stock(todo_id: i32) -> Result<(), reqwest::Error> {
     Ok(())
 }
 
+fn print_logo() {
+    let logo = r###"
+     ___    __
+    / _ \  / / ___  ___   __ _   __ __
+   / _  | / / / _ \/ _ \ /  ' \ / // /
+  /____/ /_/  \___/\___//_/_/_/ \_, /
+                               /___/"###;
+    println!("{}", logo);
+}
+
 async fn run() -> Result<(), Error> {
     let _client = reqwest::Client::new();
     let args: Vec<String> = env::args().skip(1).collect();
@@ -69,6 +79,7 @@ async fn run() -> Result<(), Error> {
     let mut stdout = io::stdout();
     let stdin = io::stdin();
     let mut argparser: ArgParser;
+    print_logo();
 
     loop {
         let mut buffer = String::new();
