@@ -11,3 +11,5 @@ Cargo.lock
 
 # misc
 config.txt
+config.json
+portfolio.json
