@@ -1,14 +1,15 @@
+#[derive(Debug, Clone)]
 pub struct Equity {
-    name: String,
-    ticker: String,
-    price: f32,
-    marketcap: i64,
-    time_updated: i32,
-    fivetwo_high: f32,
-    fivetwo_low: f32,
-    daily_volume: i32,
-    owned_percent: f32,
-    owned_shares: u32,
+    pub name: String,
+    pub ticker: String,
+    pub price: f32,
+    pub marketcap: i64,
+    pub time_updated: i32,
+    pub fivetwo_high: f32,
+    pub fivetwo_low: f32,
+    pub daily_volume: i32,
+    pub owned_percent: f32,
+    pub owned_shares: u32,
 }
 
 impl Equity {

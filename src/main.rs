@@ -2,12 +2,14 @@ mod argparser;
 mod config;
 mod equity;
 mod fetcher;
+mod portfolio;
 extern crate reqwest;
 
 use argparser::*;
 use config::read_user_from_file;
 use equity::Equity;
 use fetcher::Fetcher;
+use portfolio::Portfolio;
 use std::env;
 use std::fs;
 use std::io::{self, Read, Write};
