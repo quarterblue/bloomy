@@ -33,8 +33,8 @@ pub struct Config {
 
 #[derive(Deserialize, Debug)]
 pub struct KeyConfig {
-    alpha_vantage: String,
-    iex_cloud: String,
+    pub alpha_vantage: String,
+    pub iex_cloud: String,
 }
 
 pub fn read_user_from_file<P: AsRef<Path>>(path: P) -> Result<KeyConfig, Box<Error>> {

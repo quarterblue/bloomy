@@ -46,6 +46,10 @@ fn print_logo() {
     println!("{}", logo);
 }
 
+// fn init() {
+
+// }
+
 async fn run() -> Result<(), Error> {
     let _client = reqwest::Client::new();
     let args: Vec<String> = env::args().skip(1).collect();
@@ -55,9 +59,10 @@ async fn run() -> Result<(), Error> {
     let stdin = io::stdin();
     let mut argparser: ArgParser;
     print_logo();
-    let fetcher = Fetcher::new("alpha_vantage".to_string());
-    // let u = read_user_from_file("config.json").unwrap();
-    // println!("{:#?}", u);
+
+    let key = read_user_from_file("config.json").unwrap();
+    let api_key = key.alpha_vantage;
+    let fetcher = Fetcher::new("alpha_vantage".to_string(), api_key);
 
     loop {
         let mut buffer = String::new();
