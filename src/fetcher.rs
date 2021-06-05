@@ -2,6 +2,7 @@ use crate::config::ApiList;
 use crate::equity::Equity;
 use serde_json::Value;
 use std::collections::HashMap;
+use std::error;
 use std::io;
 
 // Stores a HashMap of all the platforms and their JSON API pairings
@@ -51,7 +52,7 @@ impl Fetcher {
         Ok(())
     }
 
-    pub async fn fetch_equity_price(&self, equity: &Equity) -> Result<(), Error> {
+    pub async fn fetch_equity_price(&self, equity: &Equity) -> Result<(), Box<dyn error::Error>> {
         let url = format!(
             "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={}&apikey={}",
             &equity.ticker, &self.api_key
@@ -61,13 +62,19 @@ impl Fetcher {
         Ok(())
     }
 
-    pub async fn search_equity(ticker: String) -> Result<(), Error> {
+    pub async fn search_equity(&self, ticker: String) -> Result<(), Error> {
+        let url = format!(
+            "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={}&apikey={}",
+            ticker, &self.api_key
+        );
+        let resp = reqwest::get(url).await?.json::<serde_json::Value>().await?;
+        println!("{:?}", resp);
         Ok(())
     }
 }
 
 #[derive(Debug, thiserror::Error)]
-enum Error {
+pub enum Error {
     #[error(transparent)]
     CrosstermError(#[from] crossterm::ErrorKind),
 
@@ -79,4 +86,12 @@ enum Error {
 
     #[error(transparent)]
     SerdeError(#[from] serde_json::Error),
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn fetch_price() {}
 }

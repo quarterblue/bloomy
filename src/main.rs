@@ -4,13 +4,14 @@ mod equity;
 mod fetcher;
 mod portfolio;
 extern crate reqwest;
-
 use argparser::*;
 use config::read_user_from_file;
 use equity::Equity;
 use fetcher::Fetcher;
 use portfolio::Portfolio;
+use serde_json::Value;
 use std::env;
+use std::error;
 use std::fs;
 use std::io::{self, Read, Write};
 use std::io::{BufRead, BufReader};
@@ -20,7 +21,7 @@ use tokio::task::*;
 
 #[cfg(not(target_arch = "wasm32"))]
 #[tokio::main]
-async fn main() -> Result<(), Error> {
+async fn main() -> Result<(), Box<dyn error::Error>> {
     run().await?;
     // let _ = display_stock(6).await?;
     Ok(())
@@ -50,7 +51,7 @@ fn print_logo() {
 
 // }
 
-async fn run() -> Result<(), Error> {
+async fn run() -> Result<(), Box<dyn error::Error>> {
     let _client = reqwest::Client::new();
     let args: Vec<String> = env::args().skip(1).collect();
     // load_config(&String::from("config.txt"))?;
@@ -77,7 +78,7 @@ async fn run() -> Result<(), Error> {
 
         match argparser.command {
             Some(Command::Stock) => display_stock(5).await?,
-            Some(Command::Portfolio) => println!("Portfolio now!"),
+            Some(Command::Portfolio) => fetcher.search_equity("sq".to_string()).await?,
             Some(Command::Market) => println!("Market now!"),
             Some(Command::Help) => println!("Help now!"),
             Some(Command::Load) => println!("Loading Config..."),
@@ -135,4 +136,7 @@ enum Error {
 
     #[error(transparent)]
     ReqwestError(#[from] reqwest::Error),
+
+    #[error(transparent)]
+    SerdeError(#[from] serde_json::Error),
 }
