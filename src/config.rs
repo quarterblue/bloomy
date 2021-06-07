@@ -6,6 +6,7 @@ use std::fs::File;
 use std::io::BufReader;
 use std::path::Path;
 
+#[derive(Debug)]
 pub struct ApiList {
     pub mapper: HashMap<String, String>,
 }

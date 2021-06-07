@@ -1,10 +1,14 @@
 pub enum Command {
-    Stock,
+    Equity,
     Portfolio,
     Market,
     Lookup,
     Help,
     Load,
+}
+
+pub enum ECommand {
+    Price,
 }
 
 pub struct ArgParser {

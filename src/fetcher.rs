@@ -5,6 +5,7 @@ use std::collections::HashMap;
 use std::error;
 use std::io;
 
+#[derive(Debug)]
 // Stores a HashMap of all the platforms and their JSON API pairings
 pub struct Fetcher {
     pub current: String,
@@ -52,7 +53,7 @@ impl Fetcher {
         Ok(())
     }
 
-    pub async fn fetch_equity_price(&self, equity: &Equity) -> Result<(), Box<dyn error::Error>> {
+    pub async fn fetch_equity_price(&self, equity: &Equity) -> Result<(), Error> {
         let url = format!(
             "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={}&apikey={}",
             &equity.ticker, &self.api_key
@@ -69,6 +70,22 @@ impl Fetcher {
         );
         let resp = reqwest::get(url).await?.json::<serde_json::Value>().await?;
         println!("{:?}", resp);
+        Ok(())
+    }
+
+    pub async fn search_equity_demo(&self, ticker: String) -> Result<(), Error> {
+        let url = format!(
+            "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=IBM&apikey=demo",
+        );
+        let resp = reqwest::get(url).await?.json::<serde_json::Value>().await?;
+        println!("{}", &self.global_quote[4].0);
+        println!(
+            "{}",
+            resp.get("Global Quote")
+                .unwrap()
+                .get(&self.global_quote[4].0)
+                .unwrap()
+        );
         Ok(())
     }
 }
