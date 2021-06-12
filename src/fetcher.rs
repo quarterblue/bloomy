@@ -90,6 +90,7 @@ impl Fetcher {
     }
 }
 
+// Derives custom errors using thiserror crate
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
     #[error(transparent)]

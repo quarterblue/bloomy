@@ -50,6 +50,7 @@ use tokio::task::*;
 //
 // exit
 
+// The main entry thread of the application
 #[cfg(not(target_arch = "wasm32"))]
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn error::Error>> {
@@ -58,7 +59,7 @@ async fn main() -> Result<(), Box<dyn error::Error>> {
     Ok(())
 }
 
-// Testing Reqwest get
+// Testing function for Reqwest get, prints a Todo list
 async fn display_stock(todo_id: i32) -> Result<(), Error> {
     let url = format!("https://jsonplaceholder.typicode.com/todos/{}", todo_id);
     let res = reqwest::get(url).await?;
@@ -68,6 +69,7 @@ async fn display_stock(todo_id: i32) -> Result<(), Error> {
     Ok(())
 }
 
+// Prints the Bloomy logo
 fn print_logo() {
     let logo = r###"
      ___    __
@@ -78,10 +80,11 @@ fn print_logo() {
     println!("{}", logo.green());
 }
 
-// fn init() {
+pub fn init() {
+    println!("Initialize App");
+}
 
-// }
-
+// The main loop of the application, it is called in the main() function
 async fn run() -> Result<(), Box<dyn error::Error>> {
     let _client = reqwest::Client::new();
     let args: Vec<String> = env::args().skip(1).collect();
@@ -120,28 +123,40 @@ async fn run() -> Result<(), Box<dyn error::Error>> {
     Ok(())
 }
 
+// Argument parsing function for user typed commands
+// It expects a string of text (words seperated by spaces)
+// Example command would be:
+// $ bloomy cmd> equity TSLA price
 fn parsearg(input: &mut String) -> Result<ArgParser, Error> {
     let split = input.split(" ");
     let arguments: Vec<&str> = split.collect();
-    println!("{:?}", &input);
     match arguments[0].to_lowercase().as_str().trim() {
-        "equity" => match arguments[2].to_lowercase().as_str().trim() {
-            "" => {
+        "equity" => {
+            if arguments.len() < 3 {
+                println!("Error: not enough arguments");
                 return Ok(ArgParser {
                     command: Some(Command::Equity),
                 });
+            } else {
+                match arguments[2].to_lowercase().as_str().trim() {
+                    "hi" => {
+                        return Ok(ArgParser {
+                            command: Some(Command::Equity),
+                        });
+                    }
+                    "price" => {
+                        return Ok(ArgParser {
+                            command: Some(Command::Equity),
+                        });
+                    }
+                    _ => {
+                        return Ok(ArgParser {
+                            command: Some(Command::Equity),
+                        });
+                    }
+                }
             }
-            "price" => {
-                return Ok(ArgParser {
-                    command: Some(Command::Equity),
-                });
-            }
-            _ => {
-                return Ok(ArgParser {
-                    command: Some(Command::Equity),
-                });
-            }
-        },
+        }
         "portfolio" | "port" => {
             return Ok(ArgParser {
                 command: Some(Command::Portfolio),
@@ -169,6 +184,7 @@ fn parsearg(input: &mut String) -> Result<ArgParser, Error> {
     }
 }
 
+// Derives custom errors using thiserror crate
 #[derive(Debug, thiserror::Error)]
 enum Error {
     #[error(transparent)]
