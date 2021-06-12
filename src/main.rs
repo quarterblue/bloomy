@@ -4,6 +4,7 @@ mod equity;
 mod fetcher;
 mod portfolio;
 
+use argparser::parsearg;
 use argparser::*;
 use colored::*;
 use config::read_user_from_file;
@@ -121,67 +122,6 @@ async fn run() -> Result<(), Box<dyn error::Error>> {
         stdout.flush()?;
     }
     Ok(())
-}
-
-// Argument parsing function for user typed commands
-// It expects a string of text (words seperated by spaces)
-// Example command would be:
-// $ bloomy cmd> equity TSLA price
-fn parsearg(input: &mut String) -> Result<ArgParser, Error> {
-    let split = input.split(" ");
-    let arguments: Vec<&str> = split.collect();
-    match arguments[0].to_lowercase().as_str().trim() {
-        "equity" => {
-            if arguments.len() < 3 {
-                println!("Error: not enough arguments");
-                return Ok(ArgParser {
-                    command: Some(Command::Equity(ECmd::Err)),
-                });
-            } else {
-                match arguments[2].to_lowercase().as_str().trim() {
-                    "overview" => {
-                        return Ok(ArgParser {
-                            command: Some(Command::Equity(ECmd::Overview)),
-                        });
-                    }
-                    "price" => {
-                        return Ok(ArgParser {
-                            command: Some(Command::Equity(ECmd::Price)),
-                        });
-                    }
-                    _ => {
-                        return Ok(ArgParser {
-                            command: Some(Command::Equity(ECmd::Err)),
-                        });
-                    }
-                }
-            }
-        }
-        "portfolio" | "port" => {
-            return Ok(ArgParser {
-                command: Some(Command::Portfolio),
-            });
-        }
-        "market" => {
-            return Ok(ArgParser {
-                command: Some(Command::Market),
-            });
-        }
-        "help" => {
-            return Ok(ArgParser {
-                command: Some(Command::Help),
-            });
-        }
-        "load" => {
-            return Ok(ArgParser {
-                command: Some(Command::Load),
-            });
-        }
-        _ => {
-            println!("Well, it's an error!");
-            return Ok(ArgParser { command: None });
-        }
-    }
 }
 
 // Derives custom errors using thiserror crate
