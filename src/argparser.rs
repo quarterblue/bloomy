@@ -10,10 +10,17 @@ pub enum Command {
 }
 
 pub enum ECmd {
-    Price,
+    Price(String),
     LogArg,
     Overview,
     Err,
+    Chart,
+    ListCommand,
+}
+pub enum PCmd {
+    Add,
+    Remove,
+    List,
 }
 
 pub struct ArgParser {
@@ -98,7 +105,9 @@ pub fn parsearg(input: &mut String) -> Result<ArgParser, Error> {
                     }
                     "price" => {
                         return Ok(ArgParser {
-                            command: Some(Command::Equity(ECmd::Price)),
+                            command: Some(Command::Equity(ECmd::Price(
+                                arguments[1].trim().to_string(),
+                            ))),
                         });
                     }
                     _ => {
@@ -110,9 +119,30 @@ pub fn parsearg(input: &mut String) -> Result<ArgParser, Error> {
             }
         }
         "portfolio" | "port" => {
-            return Ok(ArgParser {
-                command: Some(Command::Portfolio),
-            });
+            if arguments.len() < 3 {
+                println!("Error: not enough arguments");
+                return Ok(ArgParser {
+                    command: Some(Command::Equity(ECmd::Err)),
+                });
+            } else {
+                match arguments[2].to_lowercase().as_str().trim() {
+                    "add" => {
+                        return Ok(ArgParser {
+                            command: Some(Command::Portfolio),
+                        });
+                    }
+                    "remove" => {
+                        return Ok(ArgParser {
+                            command: Some(Command::Equity(ECmd::Err)),
+                        });
+                    }
+                    _ => {
+                        return Ok(ArgParser {
+                            command: Some(Command::Equity(ECmd::Err)),
+                        });
+                    }
+                }
+            }
         }
         "market" => {
             return Ok(ArgParser {

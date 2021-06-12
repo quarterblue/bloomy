@@ -69,23 +69,39 @@ impl Fetcher {
             ticker, &self.api_key
         );
         let resp = reqwest::get(url).await?.json::<serde_json::Value>().await?;
-        println!("{:?}", resp);
+        let quotes = resp.get("Global Quote").unwrap();
+        for x in &self.global_quote {
+            let value = quotes.get(&x.0).unwrap();
+            let title = &x.1;
+            println!("{}: {}", title, value);
+        }
+        println!("");
         Ok(())
     }
 
+    // Searches an equity by ticker and outputs a list of global quote information:
+    // Ticker: IBM
+    // Open: 150.4300
+    // High: 151.8450
+    // Low: 150.3700
+    // Price: 150.2800
+    // Volume: 3421395
+    // Latest Trading Day: 2021-06-11
+    // Previous Close: 150.5400
+    // Change: 0.700
+    // Change Percent: 0.4916%
     pub async fn search_equity_demo(&self, ticker: String) -> Result<(), Error> {
         let url = format!(
             "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=IBM&apikey=demo",
         );
         let resp = reqwest::get(url).await?.json::<serde_json::Value>().await?;
-        println!("{}", &self.global_quote[4].0);
-        println!(
-            "{}",
-            resp.get("Global Quote")
-                .unwrap()
-                .get(&self.global_quote[4].0)
-                .unwrap()
-        );
+        let quotes = resp.get("Global Quote").unwrap();
+        for x in &self.global_quote {
+            let value = quotes.get(&x.0).unwrap();
+            let title = &x.1;
+            println!("{}: {}", title, value);
+        }
+        println!("");
         Ok(())
     }
 }

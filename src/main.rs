@@ -8,18 +8,11 @@ use argparser::parsearg;
 use argparser::*;
 use colored::*;
 use config::read_user_from_file;
-use equity::Equity;
 use fetcher::Fetcher;
-use portfolio::Portfolio;
-use serde_json::Value;
 use std::env;
 use std::error;
-use std::fs;
-use std::io::{self, Read, Write};
-use std::io::{BufRead, BufReader};
-use std::path::Path;
+use std::io::{self, Write};
 use std::string::String;
-use tokio::task::*;
 
 // Equity Commands:
 // equity
@@ -112,12 +105,19 @@ async fn run() -> Result<(), Box<dyn error::Error>> {
         argparser = parsearg(&mut buffer)?;
 
         match argparser.command {
-            Some(Command::Equity(ECmd)) => display_stock(5).await?,
+            Some(Command::Equity(ECmd)) => match ECmd {
+                ECmd::Price(ticker) => {
+                    fetcher.search_equity(ticker).await?;
+                }
+                _ => {
+                    println!("Nothing")
+                }
+            },
             Some(Command::Portfolio) => fetcher.search_equity_demo("ibm".to_string()).await?,
-            Some(Command::Market) => println!("{}", "Market".blue()),
+            Some(Command::Market) => display_stock(5).await?,
             Some(Command::Help) => println!("{}", "Display Help".cyan()),
             Some(Command::Load) => println!("Loading Config..."),
-            _ => println!("Nothing"),
+            _ => println!("Error"),
         }
         stdout.flush()?;
     }
