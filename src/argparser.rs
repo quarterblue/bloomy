@@ -1,5 +1,5 @@
 pub enum Command {
-    Equity,
+    Equity(ECmd),
     Portfolio,
     Market,
     Lookup,
@@ -7,8 +7,11 @@ pub enum Command {
     Load,
 }
 
-pub enum ECommand {
+pub enum ECmd {
     Price,
+    LogArg,
+    Overview,
+    Err,
 }
 
 pub struct ArgParser {

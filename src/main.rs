@@ -111,7 +111,7 @@ async fn run() -> Result<(), Box<dyn error::Error>> {
         argparser = parsearg(&mut buffer)?;
 
         match argparser.command {
-            Some(Command::Equity) => display_stock(5).await?,
+            Some(Command::Equity(ECmd)) => display_stock(5).await?,
             Some(Command::Portfolio) => fetcher.search_equity_demo("ibm".to_string()).await?,
             Some(Command::Market) => println!("{}", "Market".blue()),
             Some(Command::Help) => println!("{}", "Display Help".cyan()),
@@ -135,23 +135,23 @@ fn parsearg(input: &mut String) -> Result<ArgParser, Error> {
             if arguments.len() < 3 {
                 println!("Error: not enough arguments");
                 return Ok(ArgParser {
-                    command: Some(Command::Equity),
+                    command: Some(Command::Equity(ECmd::Err)),
                 });
             } else {
                 match arguments[2].to_lowercase().as_str().trim() {
-                    "hi" => {
+                    "overview" => {
                         return Ok(ArgParser {
-                            command: Some(Command::Equity),
+                            command: Some(Command::Equity(ECmd::Overview)),
                         });
                     }
                     "price" => {
                         return Ok(ArgParser {
-                            command: Some(Command::Equity),
+                            command: Some(Command::Equity(ECmd::Price)),
                         });
                     }
                     _ => {
                         return Ok(ArgParser {
-                            command: Some(Command::Equity),
+                            command: Some(Command::Equity(ECmd::Err)),
                         });
                     }
                 }
