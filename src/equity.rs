@@ -1,3 +1,4 @@
+use crate::fetcher::Fetcher;
 use std::default;
 
 #[derive(Default, Debug, Clone)]
@@ -71,6 +72,8 @@ impl Equity {
             global_quote: None,
         }
     }
+
+    pub fn populate_price(&mut self, fetcher: &Fetcher) {}
 
     pub fn short_info() {}
 

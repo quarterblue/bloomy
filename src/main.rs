@@ -25,24 +25,34 @@ use std::string::String;
 // - Fetch and render current price of [TICKER]
 // equity [TICKER] price chart
 // equity [TICKER] price historic [WEEK/MONTH/YEAR]
-// equity [TICKER] an dcf
-// equity [TICKER] an comp
+// equity [TICKER] dcf
+// - Perform DCF calculation
+// equity [TICKER] comp
+// - Perform Comp calculation
 //
 // Portfolio Commands:
 // port
 // port list
+// port make [PORTFOLIO]
+// - Make a new portfolio named [PORTFOLIO]
 // port switch [PORTFOLIO]
+// - Switch to portfolio name [PORTFOLIO]
 // port add [TICKER]
+// - Add [TICKER] equity into current portfolio
 // port remove [TICKER]
-// port delete
+// - Remove [TICKER] equity from current portfolio
+// port delete [PORTFOLIO]
 //
 // config
 //
 // market
+// - List all markets available for fetching
 //
 // help
+// - List all available commands
 //
 // exit
+// - Exits the program
 
 // The main entry thread of the application
 #[cfg(not(target_arch = "wasm32"))]

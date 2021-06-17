@@ -79,6 +79,10 @@ impl Fetcher {
         Ok(())
     }
 
+    pub async fn equity_overview(&self, ticker: String) -> Result<(), Error> {
+        Ok(())
+    }
+
     // Searches an equity by ticker and outputs a list of global quote information:
     // Ticker: IBM
     // Open: 150.4300
