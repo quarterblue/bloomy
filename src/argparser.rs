@@ -2,7 +2,7 @@ use std::io;
 
 pub enum Command {
     Equity(ECmd),
-    Portfolio,
+    Portfolio(PCmd),
     Market,
     Lookup,
     Help,
@@ -17,10 +17,14 @@ pub enum ECmd {
     Chart,
     ListCommand,
 }
+
 pub enum PCmd {
-    Add,
-    Remove,
+    Add(String),
+    Remove(String),
+    ListPort(String),
     List,
+    Make(String),
+    Delete(String),
 }
 
 pub struct ArgParser {
@@ -82,6 +86,49 @@ impl StockArgs {
     }
 }
 
+// Equity Commands:
+// equity
+// - Lists all equity commands
+// equity [TICKER]
+// - Search an equity TICKER
+// equity [TICKER] overview
+// - Fetch and render company overview of [TICKER]
+// equity [TICKER] price
+// - Fetch and render current price of [TICKER]
+// equity [TICKER] price chart
+// equity [TICKER] price historic [WEEK/MONTH/YEAR]
+// equity [TICKER] dcf
+// - Perform DCF calculation
+// equity [TICKER] comp
+// - Perform Comp calculation
+//
+// Portfolio Commands:
+// port
+// port list
+// - List all portfolios
+// post list [PORTFOLIO]
+// - List all equity in [PORTFOLIO]
+// port make [PORTFOLIO]
+// - Make a new portfolio named [PORTFOLIO]
+// port switch [PORTFOLIO]
+// - Switch to portfolio name [PORTFOLIO]
+// port add [TICKER]
+// - Add [TICKER] equity into current portfolio
+// port remove [TICKER]
+// - Remove [TICKER] equity from current portfolio
+// port delete [PORTFOLIO]
+//
+// config
+//
+// market
+// - List all markets available for fetching
+//
+// help
+// - List all available commands
+//
+// exit
+// - Exits the program
+
 // Argument parsing function for user typed commands
 // It expects a string of text (words seperated by spaces)
 // Example command would be:
@@ -89,6 +136,10 @@ impl StockArgs {
 pub fn parsearg(input: &mut String) -> Result<ArgParser, Error> {
     let split = input.split(" ");
     let arguments: Vec<&str> = split.collect();
+    let arguments_cleaned: Vec<String> = arguments
+        .iter()
+        .map(|el| el.trim().to_string().to_lowercase())
+        .collect();
     match arguments[0].to_lowercase().as_str().trim() {
         "equity" => {
             if arguments.len() < 3 {
@@ -125,10 +176,12 @@ pub fn parsearg(input: &mut String) -> Result<ArgParser, Error> {
                     command: Some(Command::Equity(ECmd::Err)),
                 });
             } else {
-                match arguments[2].to_lowercase().as_str().trim() {
+                match arguments[1].to_lowercase().as_str().trim() {
                     "add" => {
                         return Ok(ArgParser {
-                            command: Some(Command::Portfolio),
+                            command: Some(Command::Portfolio(PCmd::Add(
+                                arguments[2].trim().to_string(),
+                            ))),
                         });
                     }
                     "remove" => {

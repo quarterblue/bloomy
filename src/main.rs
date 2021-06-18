@@ -9,50 +9,11 @@ use argparser::*;
 use colored::*;
 use config::read_user_from_file;
 use fetcher::Fetcher;
+use portfolio::{PortList, Portfolio};
 use std::env;
 use std::error;
 use std::io::{self, Write};
 use std::string::String;
-
-// Equity Commands:
-// equity
-// - Lists all equity commands
-// equity [TICKER]
-// - Search an equity TICKER
-// equity [TICKER] overview
-// - Fetch and render company overview of [TICKER]
-// equity [TICKER] price
-// - Fetch and render current price of [TICKER]
-// equity [TICKER] price chart
-// equity [TICKER] price historic [WEEK/MONTH/YEAR]
-// equity [TICKER] dcf
-// - Perform DCF calculation
-// equity [TICKER] comp
-// - Perform Comp calculation
-//
-// Portfolio Commands:
-// port
-// port list
-// port make [PORTFOLIO]
-// - Make a new portfolio named [PORTFOLIO]
-// port switch [PORTFOLIO]
-// - Switch to portfolio name [PORTFOLIO]
-// port add [TICKER]
-// - Add [TICKER] equity into current portfolio
-// port remove [TICKER]
-// - Remove [TICKER] equity from current portfolio
-// port delete [PORTFOLIO]
-//
-// config
-//
-// market
-// - List all markets available for fetching
-//
-// help
-// - List all available commands
-//
-// exit
-// - Exits the program
 
 // The main entry thread of the application
 #[cfg(not(target_arch = "wasm32"))]
@@ -85,12 +46,13 @@ fn print_logo() {
 }
 
 pub fn init() {
-    println!("Initialize App");
+    println!("Initialized App");
 }
 
 // The main loop of the application, it is called in the main() function
 async fn run() -> Result<(), Box<dyn error::Error>> {
     let _client = reqwest::Client::new();
+    let port_tracker = PortList::empty_new();
     let args: Vec<String> = env::args().skip(1).collect();
     // load_config(&String::from("config.txt"))?;
 
@@ -123,10 +85,15 @@ async fn run() -> Result<(), Box<dyn error::Error>> {
                     println!("Nothing")
                 }
             },
-            Some(Command::Portfolio) => fetcher.search_equity_demo("ibm".to_string()).await?,
+            Some(Command::Portfolio(PCmd)) => match PCmd {
+                PCmd::List => {}
+                _ => {
+                    println!("Nothing")
+                }
+            },
             Some(Command::Market) => display_stock(5).await?,
             Some(Command::Help) => println!("{}", "Display Help".cyan()),
-            Some(Command::Load) => println!("Loading Config..."),
+            Some(Command::Load) => fetcher.search_equity_demo("ibm".to_string()).await?,
             _ => println!("Error"),
         }
         stdout.flush()?;
