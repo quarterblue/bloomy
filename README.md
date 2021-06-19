@@ -30,6 +30,24 @@
   </p>
 </p>
 
+## About
+
+`Bloomy` is a minimalistic terminal application for fetching, analyzing, and backesting equity data.
+
+## Key Features
+
+- [x] Multiple portfolio management
+- [x] Real time price fetching and rendering
+- [x] Equity overview analysis
+- [ ] Historical price charting
+- [x] Discounted cash flow analysis
+- [x] Comparables analysis
+- [ ] Backtesting
+- [ ] Customizable configuration
+- [x] Alpha Vantage integration
+- [ ] IEX Cloud integration
+
+
 ## Installation
 
 To run, clone the repo and run
@@ -38,7 +56,28 @@ cargo run --release [bloomy]
 ```
 
 ## Usage
+**Equity Commands:**
 
-```rust
-// To be updated
+equity price `[TICKER]`
+
+_Fetch and render price of `[TICKER]`_
+```bash
+$ bloomy cmd> equity price tsla
+```
+
+```bash
+ticker: TSLA
+open: 613.37
+high: 628.35
+low: 611.80
+price: 623.31
+volume: 24,560,905
+ltd: 2021-06-18
+```
+
+**Portfolio Commands:**
+
+port make `[PORTFOLIO]`
+```bash
+$ bloomy cmd> port make tech2021
 ```
