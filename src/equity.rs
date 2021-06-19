@@ -75,6 +75,10 @@ impl Equity {
 
     pub fn populate_price(&mut self, fetcher: &Fetcher) {}
 
+    pub fn populate_overview(&mut self, fetcher: &Fetcher) {}
+
+    pub fn print_price(&mut self) {}
+
     pub fn short_info() {}
 
     pub fn long_info() {}

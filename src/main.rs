@@ -9,7 +9,7 @@ use argparser::*;
 use colored::*;
 use config::read_user_from_file;
 use fetcher::Fetcher;
-use portfolio::{PortList, Portfolio};
+use portfolio::{PortList, Portfolio, Presult};
 use std::env;
 use std::error;
 use std::io::{self, Write};
@@ -20,7 +20,6 @@ use std::string::String;
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn error::Error>> {
     run().await?;
-    // let _ = display_stock(6).await?;
     Ok(())
 }
 
@@ -52,7 +51,7 @@ pub fn init() {
 // The main loop of the application, it is called in the main() function
 async fn run() -> Result<(), Box<dyn error::Error>> {
     let _client = reqwest::Client::new();
-    let port_tracker = PortList::empty_new();
+    let mut port_tracker = PortList::empty_new();
     let args: Vec<String> = env::args().skip(1).collect();
     // load_config(&String::from("config.txt"))?;
 
@@ -65,6 +64,7 @@ async fn run() -> Result<(), Box<dyn error::Error>> {
     let api_key = key.alpha_vantage;
     let fetcher = Fetcher::new("alpha_vantage".to_string(), api_key);
 
+    // Main loop for gathering user command and parsing
     loop {
         let mut buffer = String::new();
         write!(stdout, "$ bloomy cmd> ")?;
@@ -74,21 +74,38 @@ async fn run() -> Result<(), Box<dyn error::Error>> {
         if buffer.trim() == "q" || buffer.trim() == "quit" || buffer.trim() == "exit" {
             break;
         }
+        // Argparser parses the user arguments and returns argparser with Enum Commands
         argparser = parsearg(&mut buffer)?;
 
+        // Enum commands are matched and corresponding fetcher or renderer executes the commands
         match argparser.command {
             Some(Command::Equity(ECmd)) => match ECmd {
                 ECmd::Price(ticker) => {
                     fetcher.search_equity(ticker).await?;
                 }
+                ECmd::Overview(ticker) => {
+                    fetcher.equity_overview(ticker).await?;
+                }
                 _ => {
-                    println!("Nothing")
+                    println!("Error: Equity")
                 }
             },
             Some(Command::Portfolio(PCmd)) => match PCmd {
-                PCmd::List => {}
+                PCmd::List => {
+                    println!("List")
+                }
+                PCmd::ListPort(port) => {
+                    println!("List Portfolio: {}", port)
+                }
+                PCmd::Make(port) => {
+                    if let Presult::ADDED = port_tracker.add(port) {
+                        println!("Portfolio Made");
+                    } else {
+                        println!("Portfolio name already exists, try a different name!");
+                    }
+                }
                 _ => {
-                    println!("Nothing")
+                    println!("Error: Make")
                 }
             },
             Some(Command::Market) => display_stock(5).await?,

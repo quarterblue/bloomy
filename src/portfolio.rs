@@ -11,23 +11,28 @@ pub struct PortList {
 }
 
 impl PortList {
+    // Creates a new empty List of Portfolios
     pub fn empty_new() -> Self {
         PortList {
             portfolio_list: Vec::new(),
         }
     }
 
-    pub fn add(&mut self, portfolio: Portfolio) -> Presult {
-        if self.portfolio_list.iter().any(|p| p.name == portfolio.name) {
+    // Adds a Portfolio to the global PortList, Presult is returned to indicate if successful
+    // or unsuccesful if there already exists a portfolio of the indicated name
+    pub fn add(&mut self, portfolio: String) -> Presult {
+        if self.portfolio_list.iter().any(|p| p.name == portfolio) {
             println!("Portfolio name already exists. Please try another.");
             return Presult::EXISTS;
         } else {
-            self.portfolio_list.push(portfolio);
+            let new_portfolio = Portfolio::empty_new(portfolio);
+            self.portfolio_list.push(new_portfolio);
             return Presult::ADDED;
         }
     }
 
-    // Implementation needs testing
+    // *Implementation needs testing
+    // Removes a Portfolio from the global PortList
     pub fn remove(&mut self, portfolio: String) -> Presult {
         if let Some(pos) = self
             .portfolio_list
@@ -41,7 +46,8 @@ impl PortList {
         }
     }
 
-    pub fn list(&mut self) {
+    // Prints the list of Portfolios
+    pub fn list_portfolio(&mut self) {
         for port in self.portfolio_list.iter() {
             println!("{}", port.name);
         }
@@ -64,13 +70,14 @@ impl Portfolio {
         }
     }
 
-    pub fn add_equity(&mut self, new_stock: Equity) -> Presult {
+    pub fn add_equity(&mut self, new_stock: String) -> Presult {
         for stock in &self.stocks {
-            if stock.ticker == new_stock.ticker {
+            if stock.ticker == new_stock {
                 return Presult::EXISTS;
             }
         }
-        self.stocks.push(new_stock);
+        let new_equity = Equity::new(new_stock);
+        self.stocks.push(new_equity);
         return Presult::ADDED;
     }
 
@@ -88,5 +95,5 @@ impl Portfolio {
     pub fn calculate_total(&mut self) -> i64 {
         return 2000;
     }
-    pub fn print_portfolio() {}
+    pub fn print_portfolio(&self) {}
 }
