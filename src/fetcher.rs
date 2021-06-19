@@ -9,7 +9,7 @@ use std::io;
 // Fetcher is the object to interact with external API interfaces.
 #[derive(Debug)]
 pub struct Fetcher {
-    // Designates the current platform eg. Alpha Vantage, IEX Cloud, Yahoo Finance
+    // Designates the current platform. eg. Alpha Vantage, IEX Cloud, Yahoo Finance
     pub current: String,
     // Stores a HashMap of all the platforms and their JSON API pairings.
     pub platforms: HashMap<String, HashMap<String, String>>,
