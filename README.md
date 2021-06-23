@@ -26,7 +26,7 @@
     ·
     <a href="https://github.com/quarterblue/bloomy/issues">Report Bug</a>
     ·
-    <a href="https://github.com/quarterblue/bloomy/issuess">Request Feature</a>
+    <a href="https://github.com/quarterblue/bloomy/issues">Request Feature</a>
   </p>
 </p>
 
