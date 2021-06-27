@@ -1,4 +1,5 @@
 mod argparser;
+mod cacher;
 mod config;
 mod equity;
 mod fetcher;
@@ -70,7 +71,6 @@ async fn run() -> Result<(), Box<dyn error::Error>> {
         write!(stdout, "$ bloomy cmd> ")?;
         stdout.flush()?;
         stdin.read_line(&mut buffer)?;
-        // write!(stdout, "You typed {}", buffer);
         if buffer.trim() == "q" || buffer.trim() == "quit" || buffer.trim() == "exit" {
             break;
         }

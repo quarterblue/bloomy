@@ -31,6 +31,15 @@ impl Fetcher {
             ("05. price".to_string(), "price".to_string()),
             ("06. volume".to_string(), "volume".to_string()),
             ("07. latest trading day".to_string(), "ltd".to_string()),
+            (
+                "08. previous close".to_string(),
+                "previous close".to_string(),
+            ),
+            ("09. change".to_string(), "change".to_string()),
+            (
+                "10. change percent".to_string(),
+                "change percent".to_string(),
+            ),
         ];
 
         let overview_title: Vec<(String, String)> = vec![
